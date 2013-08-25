@@ -1,4 +1,0 @@
-[submodule "build/html"]
-	path = build/html
-	url = git@github.com:armaniacs/awstips.git
-	branch = gh-pages

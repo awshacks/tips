@@ -1,0 +1,158 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>EC2にsshでログインできなくなった場合の対処法 &mdash; AWS Hacks::Tips 0.01 documentation</title>
+    
+    <link rel="stylesheet" href="../../static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.01',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../static/jquery.js"></script>
+    <script type="text/javascript" src="../../static/underscore.js"></script>
+    <script type="text/javascript" src="../../static/doctools.js"></script>
+    <link rel="top" title="AWS Hacks::Tips 0.01 documentation" href="../../index.html" />
+    <link rel="next" title="Windowsインスタンスのパスワードがいつまでも取得できない場合の対処" href="../windows_password_not_ready/README.html" />
+    <link rel="prev" title="EBSボリュームの拡張方法" href="../ebs_volume_expand/README.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../windows_password_not_ready/README.html" title="Windowsインスタンスのパスワードがいつまでも取得できない場合の対処"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../ebs_volume_expand/README.html" title="EBSボリュームの拡張方法"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">AWS Hacks::Tips 0.01 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="ec2ssh">
+<h1>EC2にsshでログインできなくなった場合の対処法<a class="headerlink" href="#ec2ssh" title="Permalink to this headline">¶</a></h1>
+<hr class="docutils" />
+<div class="section" id="connection-timeout-no-route-to-host">
+<h2>Connection Timeout または No route to host<a class="headerlink" href="#connection-timeout-no-route-to-host" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>ヘルスチェックステータス1/2<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="line-block">
+<div class="line">OSレベルでの問題が起きています。</div>
+<div class="line">→ インスタンスをRebootしてみましょう。</div>
+</div>
+<p>###ヘルスチェックステータスが0/2 物理ホスト障害の可能性があります。
+| →
+インスタンスをStop/Startしてみましょう(別の物理ホストに移動させる事ができます)
+| ※ Stoppingの状態で停止しない場合には、force stopを行います(Management
+Consoleから２回目のstop/ec2-stop-instances &#8211;force i-xxxxxxxx)
+##Connection Refused sshが起動していない可能性があります。
+| → ログを確認して対応しましょう
+| ##Permission Denied 以下の可能性が考えられます</p>
+<ol class="arabic simple">
+<li>ログインユーザが間違っている (Amazon Linux
+AMIのデフォルトユーザはec2-user、CentOSはroot、Ubuntuはubuntu、Vyattaはvyattaなど)</li>
+<li>keypairが間違っている</li>
+<li>authorized_keysや~/.sshなどのパーミッションが空き過ぎている</li>
+</ol>
+<p>→ 詳細はログを確認しましょう。 <em>*</em>
+###ログインできないインスタンス上のログを確認する方法</p>
+<ol class="arabic simple">
+<li>SystemLogを確認する
+Management Consoleから → Get SystemLog
+API Toolsから → ec2-get-console-output i-xxxxxxxx</li>
+<li>root volumeのsnapshotを取得 → volumeを作成 →
+他のインスタンスにアタッチ＆マウントして、エラーが出ていないかを確認します。
+/var/log/messages /var/log/secure 等</li>
+</ol>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">EC2にsshでログインできなくなった場合の対処法</a><ul>
+<li><a class="reference internal" href="#connection-timeout-no-route-to-host">Connection Timeout または No route to host</a><ul>
+<li><a class="reference internal" href="#id1">ヘルスチェックステータス1/2</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../ebs_volume_expand/README.html"
+                        title="previous chapter">EBSボリュームの拡張方法</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../windows_password_not_ready/README.html"
+                        title="next chapter">Windowsインスタンスのパスワードがいつまでも取得できない場合の対処</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../sources/EC2/ssherror/README.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../windows_password_not_ready/README.html" title="Windowsインスタンスのパスワードがいつまでも取得できない場合の対処"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../ebs_volume_expand/README.html" title="EBSボリュームの拡張方法"
+             >previous</a> |</li>
+        <li><a href="../../index.html">AWS Hacks::Tips 0.01 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, awshacks team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
